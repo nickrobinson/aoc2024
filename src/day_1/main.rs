@@ -1,8 +1,8 @@
 use anyhow::Result;
+use itertools::Itertools;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
-use itertools::Itertools;
 
 fn main() -> Result<()> {
     // Define the file path
@@ -10,9 +10,15 @@ fn main() -> Result<()> {
 
     // Call the function to read the columns into separate vectors
     let (left_column, right_column) = read_lists(path)?;
-    
-    println!("Distance: {}", calculate_distance(&left_column, &right_column));
-    println!("Similarity: {}", calculate_similarity(&left_column, &right_column));
+
+    println!(
+        "Distance: {}",
+        calculate_distance(&left_column, &right_column)
+    );
+    println!(
+        "Similarity: {}",
+        calculate_similarity(&left_column, &right_column)
+    );
 
     Ok(())
 }
@@ -26,12 +32,10 @@ fn calculate_similarity(left_column: &[i32], right_column: &[i32]) -> i32 {
     for left in left_column.iter().sorted() {
         let mut occurunces = 0;
         for right in sorted_right.iter() {
-            if right < left {
-                continue;
-            } else if left == right {
-                occurunces += 1;
-            } else {
-                break;
+            match left.cmp(right) {
+                std::cmp::Ordering::Less => break,
+                std::cmp::Ordering::Equal => occurunces += 1,
+                std::cmp::Ordering::Greater => continue,
             }
         }
         similarity += left * occurunces;
@@ -41,7 +45,11 @@ fn calculate_similarity(left_column: &[i32], right_column: &[i32]) -> i32 {
 
 fn calculate_distance(left_column: &[i32], right_column: &[i32]) -> i32 {
     let mut distance = 0;
-    for (left, right) in left_column.iter().sorted().zip(right_column.iter().sorted()) {
+    for (left, right) in left_column
+        .iter()
+        .sorted()
+        .zip(right_column.iter().sorted())
+    {
         distance += (left - right).abs();
     }
     distance
@@ -89,5 +97,4 @@ mod tests {
         let right = vec![4, 3, 5, 3, 9, 3];
         assert_eq!(calculate_similarity(&left, &right), 31);
     }
-
 }
