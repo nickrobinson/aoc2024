@@ -18,10 +18,14 @@ fn main() -> Result<()> {
 }
 
 fn calculate_similarity(left_column: &[i32], right_column: &[i32]) -> i32 {
+    // Avoid duplicative sorting of right column
+    let mut sorted_right: Vec<i32> = right_column.to_vec();
+    sorted_right.sort();
+
     let mut similarity = 0;
     for left in left_column.iter().sorted() {
         let mut occurunces = 0;
-        for right in right_column.iter().sorted() {
+        for right in sorted_right.iter() {
             if right < left {
                 continue;
             } else if left == right {
