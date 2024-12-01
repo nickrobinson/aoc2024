@@ -71,7 +71,7 @@ fn read_lists<P: AsRef<Path>>(file_path: P) -> Result<(Vec<i32>, Vec<i32>)> {
         let numbers: Vec<&str> = line.split_whitespace().collect();
 
         // Parse and push values into respective vectors
-        if let (Some(left), Some(right)) = (numbers.get(0), numbers.get(1)) {
+        if let (Some(left), Some(right)) = (numbers.first(), numbers.get(1)) {
             left_column.push(left.parse::<i32>()?);
             right_column.push(right.parse::<i32>()?);
         }
