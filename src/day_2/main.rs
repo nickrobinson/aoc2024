@@ -104,14 +104,32 @@ mod tests {
     use super::*;
 
     #[test]
-    fn is_safe_test() {
-        let result = vec![48, 51, 54, 56];
-        assert!(is_safe(&result));
+    fn test_is_safe() {
+        assert!(is_safe(&[7, 6, 4, 2, 1])); // Decreasing
+        assert!(!is_safe(&[1, 2, 7, 8, 9])); // Invalid step size
+        assert!(!is_safe(&[1, 3, 2, 4, 5])); // Direction change
+        assert!(is_safe(&[1, 3, 6, 7, 9])); // Increasing
     }
 
     #[test]
-    fn is_safe_dampener_test() {
-        let result = vec![48, 51, 54, 56, 60];
-        assert!(is_safe_dampener(&result));
+    fn test_is_safe_dampener() {
+        assert!(is_safe_dampener(&[1, 3, 2, 4, 5])); // Remove 2
+        assert!(!is_safe_dampener(&[1, 2, 7, 8, 9])); // No valid removal
+        assert!(is_safe_dampener(&[8, 6, 4, 4, 1])); // Remove 4
+    }
+
+    #[test]
+    fn test_read_reports() {
+        let input = "7 6 4 2 1\n1 3 2 4 5\n";
+        let path = "test_input.txt";
+
+        // Create a test file
+        std::fs::write(path, input).unwrap();
+
+        let reports = read_reports(path).unwrap();
+        assert_eq!(reports, vec![vec![7, 6, 4, 2, 1], vec![1, 3, 2, 4, 5]]);
+
+        // Clean up
+        std::fs::remove_file(path).unwrap();
     }
 }
