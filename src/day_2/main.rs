@@ -56,7 +56,7 @@ fn is_safe(result: &[i32]) -> bool {
 
     for el in result.iter().skip(1) {
         let change = el - prev.unwrap();
-        if (1..4).contains(&change.abs()) {
+        if (1..=3).contains(&change.abs()) {
             if direction.is_none() {
                 direction = Some(change.signum());
             }
